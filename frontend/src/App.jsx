@@ -11,7 +11,7 @@ function App() {
       <Container>
         <Routes>
           <Route path="/" element={<Tasklist />} />
-          <Route path='/task/new' element={<Taskform />} />
+          <Route path='/tasks/new' element={<Taskform />} />
           {/* Add more routes */}
         </Routes>
       </Container>
