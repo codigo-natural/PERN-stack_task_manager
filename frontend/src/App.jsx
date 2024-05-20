@@ -1,15 +1,20 @@
+import { Container } from "@mui/material"
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { Tasklist } from './components/TaskList'
+import { Navbar } from "./components/Navbar"
 import { Taskform } from './components/TaskForm'
+import { Tasklist } from './components/TaskList'
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Tasklist />} />
-        <Route path='/task/new' element={<Taskform />} />
-        {/* Add more routes */}
-      </Routes>
+      <Navbar />
+      <Container>
+        <Routes>
+          <Route path="/" element={<Tasklist />} />
+          <Route path='/task/new' element={<Taskform />} />
+          {/* Add more routes */}
+        </Routes>
+      </Container>
     </BrowserRouter>
   )
 }
