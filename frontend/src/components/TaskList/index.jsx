@@ -8,6 +8,18 @@ export const Tasklist = () => {
     const data = await response.json()
     setTasks(data)
   }
+
+  const handleDelete = async (id) => {
+    try {
+      await fetch(`http://localhost:3000/task/${id}`, {
+        method: 'DELETE',
+      })
+      setTasks(tasks.filter(task => task.id !== id))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     loadTasks()
   }, [])
@@ -18,7 +30,7 @@ export const Tasklist = () => {
         tasks.map(task => (
           <Card
             style={{ marginBottom: '.7rem', backgroundColor: '#1e272e' }}
-            key={task.name}>
+            key={task.id}>
             <CardContent style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div style={{ color: 'white' }}>
                 <Typography>{task.title}</Typography>
@@ -35,7 +47,7 @@ export const Tasklist = () => {
                 <Button
                   variant="contained"
                   color="warning"
-                  onClick={() => console.log('edit')}
+                  onClick={() => console.log(handleDelete(task.id))}
                   style={{ marginLeft: '.5rem' }}
                 >
                   Delete
