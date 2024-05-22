@@ -12,7 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Tasklist />} />
           <Route path='/tasks/new' element={<Taskform />} />
-          {/* Add more routes */}
+          <Route path='/tasks/:id/edit' element={<Taskform />} />
         </Routes>
       </Container>
     </BrowserRouter>
