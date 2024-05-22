@@ -7,8 +7,8 @@ import {
   TextField,
   Typography
 } from '@mui/material'
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom'
 
 export const Taskform = () => {
   const [task, setTask] = useState({
@@ -16,30 +16,55 @@ export const Taskform = () => {
     description: ''
   })
   const [loading, setLoading] = useState(false)
+  const [editing, setEditing] = useState(false)
 
   const navigate = useNavigate()
+  const params = useParams()
 
   const handleSubmit = async e => {
     e.preventDefault();
-
     setLoading(true)
 
-    const res = await fetch('http://localhost:3000/tasks', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(task)
-    })
-    const data = await res.json()
+    if (editing) {
+      await fetch(`http://localhost:3000/tasks/${params.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(task)
+      })
+    } else {
+      await fetch('http://localhost:3000/tasks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+    }
 
     setLoading(false)
-
     navigate('/')
   }
 
   const handleChange = e =>
     setTask({ ...task, [e.target.name]: e.target.value })
+
+  const loadTask = async id => {
+    const res = await fetch(`http://localhost/tasks${id}`)
+    const data = await res.json()
+    setEditing(true)
+
+    setTask({
+      title: data.title,
+      description: data.description
+    })
+  }
+
+  useEffect(() => {
+    if (params.id) {
+      loadTask(params.id)
+    }
+  }, [params.id])
 
   return (
     <Grid
@@ -58,7 +83,7 @@ export const Taskform = () => {
             textAlign='center'
             color='white'
           >
-            Create Task
+            {editing ? 'Edit Task' : 'Create Task'}
           </Typography>
           <CardContent>
             <form onSubmit={handleSubmit}>
@@ -70,7 +95,7 @@ export const Taskform = () => {
                   margin: '.5rem 0'
                 }}
 
-                // value={task.title}
+                value={task.title}
                 name='title'
                 onChange={handleChange}
                 inputProps={{ style: { color: '#fff' } }}
@@ -87,7 +112,7 @@ export const Taskform = () => {
                   margin: '.5rem 0'
                 }}
 
-                // value={task.description}
+                value={task.description}
                 name='description'
                 onChange={handleChange}
                 inputProps={{ style: { color: '#fff' } }}
@@ -98,8 +123,8 @@ export const Taskform = () => {
                 color='primary'
                 type='submit'
                 disabled={!task.title || !task.description || loading}
-                >
-                {loading ? <CircularProgress color='inherit' size={24} /> : 'Create'}
+              >
+                {loading ? <CircularProgress color='inherit' size={24} /> : 'Save'}
               </Button>
             </form>
           </CardContent>
